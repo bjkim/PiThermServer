@@ -15,6 +15,7 @@ var fs = require('fs');
 var sys = require('sys');
 var http = require('http');
 var sqlite3 = require('sqlite3');
+var moment = require('moment');
 
 // Use node-static module to server chart for client-side dynamic graph
 var nodestatic = require('node-static');
@@ -36,8 +37,8 @@ function insertTemp(data) {
 }
 
 // Read current temperature from sensor
-function readTemp(callback) {
-  fs.readFile('/sys/bus/w1/devices/28-000003a80662/w1_slave','utf8', function (err, buffer) {
+function readTemp(id, callback) {
+  fs.readFile('/sys/bus/w1/devices/' + id + '/w1_slave','utf8', function (err, buffer) {
     if (err) {
       console.error(err);
       process.exit(1);
@@ -46,16 +47,19 @@ function readTemp(callback) {
     var crc = buffer.match(/YES/g);
     if (!crc) {
       process.nextTick(function () {
-        readTemp(callback);
+        readTemp(id, callback);
       });
       return;
     }
     
     var temp = buffer.match(/t=(\-?\d+)/i);
+    var cur_time = moment();
+    cur_time.hours(cur_time.hour() + 9);
+
     // Add date/time to temperature
     var data = {
       temperature_record: [{
-        unix_time: Date.now(),
+        unix_time: cur_time.valueOf(),
         celsius: temp[1]/1000 
       }]
     };
@@ -68,7 +72,7 @@ function readTemp(callback) {
 // Create a wrapper function which we'll use specifically for logging
 function logTemp(interval) {
   // Call the readTemp function with the insertTemp function as output to get initial reading
-  readTemp(insertTemp);
+  readTemp('28-000003c2b108', insertTemp);
   // Set the repeat interval (milliseconds). Third argument is passed as callback function to first (i.e. readTemp(insertTemp)).
   setInterval(readTemp, interval, insertTemp);
 }
@@ -102,6 +106,7 @@ var server = http.createServer(
 
 		// Test to see if it's a database query
     if (pathfile == '/temperature_query.json') {
+      console.log('temperature_query.json');
       // Test to see if number of observations was specified as url query
       if (query.num_obs) {
         var num_obs = parseInt(query.num_obs);
@@ -127,9 +132,30 @@ var server = http.createServer(
     }
 
     // Test to see if it's a request for current temperature   
-    if (pathfile == '/temperature_now.json') {
-      readTemp(function(data) {
+    if (pathfile == '/temperature1_now.json') {
+      readTemp('28-000003c2b108', function (data) {
         response.writeHead(200, { "Content-type": "application/json" });		
+        response.end(JSON.stringify(data), "ascii");
+      });
+      return;
+    }
+    else if (pathfile == '/temperature2_now.json') {
+      readTemp('28-000003a80662', function (data) {
+        response.writeHead(200, { "Content-type": "application/json" });
+        response.end(JSON.stringify(data), "ascii");
+      });
+      return;
+    }
+    else if (pathfile == '/temperature3_now.json') {
+      readTemp('28-00000427b9d6', function (data) {
+        response.writeHead(200, { "Content-type": "application/json" });
+        response.end(JSON.stringify(data), "ascii");
+      });
+      return;
+    }
+    else if (pathfile == '/temperature4_now.json') {
+      readTemp('28-000003a82c81', function (data) {
+        response.writeHead(200, { "Content-type": "application/json" });
         response.end(JSON.stringify(data), "ascii");
       });
       return;
