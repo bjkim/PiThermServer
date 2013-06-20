@@ -120,7 +120,19 @@ function logTemp(interval) {
 }
 
 // Get temperature records from database
-function selectTemp(num_records, start_date, callback) {
+function selectTemp(index, num_records, start_date, callback) {
+  var db = null;
+  if (index === 1) {
+    db = db1;
+  } else if (index === 2) {
+    db = db2;
+  } else if (index === 3) {
+    db = db3;
+  } else if (index === 4) {
+    db = db4;
+  }
+
+
   // - Num records is an SQL filter from latest record back trough time series, 
   // - start_date is the first date in the time-series required, 
   // - callback is the output function
@@ -137,30 +149,16 @@ function selectTemp(num_records, start_date, callback) {
   });
 }
 function selectTemp1(num_records, start_date, callback) {
-  var current_temp = db1.all("SELECT * FROM (SELECT * FROM temperature_records WHERE unix_time > (strftime('%s',?)*1000) ORDER BY unix_time DESC LIMIT ?) ORDER BY unix_time;", start_date, num_records,
-  function (err, rows) {
-    if (err) {
-      response.writeHead(500, { "Content-type": "text/html" });
-      response.end(err + "\n");
-      console.log('Error serving querying database. ' + err);
-      return;
-    }
-    var data = {temperature_record: [rows]};
-    callback(data);
-  });
+  selectTemp(1, num_records, start_date, callback);
 }
 function selectTemp2(num_records, start_date, callback) {
-  var current_temp = db2.all("SELECT * FROM (SELECT * FROM temperature_records WHERE unix_time > (strftime('%s',?)*1000) ORDER BY unix_time DESC LIMIT ?) ORDER BY unix_time;", start_date, num_records,
-  function (err, rows) {
-    if (err) {
-      response.writeHead(500, { "Content-type": "text/html" });
-      response.end(err + "\n");
-      console.log('Error serving querying database. ' + err);
-      return;
-    }
-    var data = {temperature_record: [rows]};
-    callback(data);
-  });
+  selectTemp(2, num_records, start_date, callback);
+}
+function selectTemp3(num_records, start_date, callback) {
+  selectTemp(3, num_records, start_date, callback);
+}
+function selectTemp4(num_records, start_date, callback) {
+  selectTemp(4, num_records, start_date, callback);
 }
 
 // Setup node http server
@@ -223,6 +221,58 @@ var server = http.createServer(
       });
       return;
     }
+    else if (pathfile == '/temperature3_query.json') {
+      console.log('temperature3_query.json');
+      // Test to see if number of observations was specified as url query
+      if (query.num_obs) {
+        var num_obs = parseInt(query.num_obs);
+      } else {
+        // If not specified default to 20. Note use -1 in query string to get all.
+        var num_obs = -1;
+      }
+
+      if (query.start_date) {
+        var start_date = query.start_date;
+      }
+      else {
+        var start_date = '1970-01-01T00:00';
+      }   
+      // Send a message to console log
+      console.log('Database query request from '+ request.connection.remoteAddress +' for ' + num_obs + ' records from ' + start_date+'.');
+      // call selectTemp function to get data from database
+      selectTemp3(num_obs, start_date, function(data){
+        response.writeHead(200, { "Content-type": "application/json" });		
+        response.end(JSON.stringify(data), "ascii");
+      });
+      return;
+    }
+    else if (pathfile == '/temperature4_query.json') {
+      console.log('temperature4_query.json');
+      // Test to see if number of observations was specified as url query
+      if (query.num_obs) {
+        var num_obs = parseInt(query.num_obs);
+      } else {
+        // If not specified default to 20. Note use -1 in query string to get all.
+        var num_obs = -1;
+      }
+
+      if (query.start_date) {
+        var start_date = query.start_date;
+      }
+      else {
+        var start_date = '1970-01-01T00:00';
+      }   
+      // Send a message to console log
+      console.log('Database query request from '+ request.connection.remoteAddress +' for ' + num_obs + ' records from ' + start_date+'.');
+      // call selectTemp function to get data from database
+      selectTemp4(num_obs, start_date, function(data){
+        response.writeHead(200, { "Content-type": "application/json" });		
+        response.end(JSON.stringify(data), "ascii");
+      });
+      return;
+    }
+
+
 
     // Test to see if it's a request for current temperature   
     if (pathfile == '/temperature1_now.json') {

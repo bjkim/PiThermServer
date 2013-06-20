@@ -9,7 +9,7 @@
 		<script src="http://code.highcharts.com/highcharts.js" type="text/javascript"></script>
 		<script type="text/javascript">
 		
-      var chart1, chart2; // global chart variable
+      var chart1, chart2, chart3, chart4; // global chart variable
       // Get data from server in JSON format (query time series when sensor was outside).
       function getData1(){
          $.getJSON('/temperature1_query.json?num_obs=-1&start_date=2013-06-20T16:00', function(data){
@@ -46,6 +46,43 @@
             }
             chart2.addSeries(series);
          });
+      }
+      function getData3(){
+         $.getJSON('/temperature3_query.json?num_obs=-1&start_date=2013-06-20T16:00', function(data){
+            var series = {
+               id: 'series',
+               name: 'DS18B20 sensor (\u00B10.5\u00B0C)',
+               type: 'area',
+               data: []
+               };
+            var i = 0;
+            // Iterate JSON data series and add to plot
+            while (data.temperature_record[0][i])
+            {
+               series.data.push([data.temperature_record[0][i].unix_time, data.temperature_record[0][i].celsius]);
+               i++;
+            }
+            chart3.addSeries(series);
+         });
+      }
+      function getData4(){
+         $.getJSON('/temperature4_query.json?num_obs=-1&start_date=2013-06-20T16:00', function(data){
+            var series = {
+               id: 'series',
+               name: 'DS18B20 sensor (\u00B10.5\u00B0C)',
+               type: 'area',
+               data: []
+               };
+            var i = 0;
+            // Iterate JSON data series and add to plot
+            while (data.temperature_record[0][i])
+            {
+               series.data.push([data.temperature_record[0][i].unix_time, data.temperature_record[0][i].celsius]);
+               i++;
+            }
+            chart4.addSeries(series);
+         });
+      }
 	</script>
 
   <script type="text/javascript">
@@ -120,6 +157,130 @@
             zoomType: 'x',
             spaceRight: 20,
             events: {load: getData2()}
+               },
+        title: {
+           text: 'Plot of temperatures from Raspberry Pi logger'},
+        subtitle: {
+                text: 'Click and drag in the plot area to zoom in',
+                align: 'right',
+               },
+
+        xAxis: {
+           type: 'datetime',
+           tickPixelInterval: 150,
+           maxZoom: 20 * 1000,
+           title: {
+            text: 'Time',
+            margin: 15
+         }},
+         yAxis: {
+           minPadding: 0.2,
+           maxPadding: 0.2,
+             showFirstLabel: false,
+           title: {
+               text: 'Temperature \u00B0C',
+               margin: 15
+           }},
+             plotOptions: {
+                            area: {
+                                fillColor: {
+                                    linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1},
+                                    stops: [
+                                        [0, Highcharts.getOptions().colors[0]],
+                                        [1, 'rgba(2,0,0,0)'],
+                                    ]
+                                },
+                                lineWidth: 1,
+                                marker: {
+                                    enabled: false,
+                                    states: {
+                                        hover: {
+                                            enabled: true,
+                                            radius: 5
+                                        }
+                                    }
+                                },
+                                shadow: false,
+                                states: {
+                                    hover: {
+                                        lineWidth: 1
+                                    }
+                                },
+                                threshold: null
+                            },
+
+
+                        },
+         });
+      chart3 = new Highcharts.Chart({
+         chart: {
+            renderTo: 'container3',
+            //type: 'spline',
+            zoomType: 'x',
+            spaceRight: 20,
+            events: {load: getData3()}
+               },
+        title: {
+           text: 'Plot of temperatures from Raspberry Pi logger'},
+        subtitle: {
+                text: 'Click and drag in the plot area to zoom in',
+                align: 'right',
+               },
+
+        xAxis: {
+           type: 'datetime',
+           tickPixelInterval: 150,
+           maxZoom: 20 * 1000,
+           title: {
+            text: 'Time',
+            margin: 15
+         }},
+         yAxis: {
+           minPadding: 0.2,
+           maxPadding: 0.2,
+             showFirstLabel: false,
+           title: {
+               text: 'Temperature \u00B0C',
+               margin: 15
+           }},
+             plotOptions: {
+                            area: {
+                                fillColor: {
+                                    linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1},
+                                    stops: [
+                                        [0, Highcharts.getOptions().colors[0]],
+                                        [1, 'rgba(2,0,0,0)'],
+                                    ]
+                                },
+                                lineWidth: 1,
+                                marker: {
+                                    enabled: false,
+                                    states: {
+                                        hover: {
+                                            enabled: true,
+                                            radius: 5
+                                        }
+                                    }
+                                },
+                                shadow: false,
+                                states: {
+                                    hover: {
+                                        lineWidth: 1
+                                    }
+                                },
+                                threshold: null
+                            },
+
+
+                        },
+         });
+      chart4 = new Highcharts.Chart({
+         chart: {
+            renderTo: 'container4',
+            //type: 'spline',
+            zoomType: 'x',
+            spaceRight: 20,
+            events: {load: getData4()}
                },
         title: {
 		       text: 'Plot of temperatures from Raspberry Pi logger'},
