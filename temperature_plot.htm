@@ -10,6 +10,7 @@
 		<script type="text/javascript">
 		
 		var chart1, chart2, chart3, chart4; // global chart variable
+    var interval = 200;
 
 		// Get data from Pi NodeJS server
     function getData1(){
@@ -21,7 +22,7 @@
         // Add the point
         chart1.series[0].addPoint([data.temperature_record[0].unix_time, data.temperature_record[0].celsius], true, shift);
         // Repeat this function call after 1 second
-        setTimeout(getData1, 1000);
+        setTimeout(getData1, interval);
       });
     }
     function getData2(){
@@ -33,7 +34,7 @@
         // Add the point
         chart2.series[0].addPoint([data.temperature_record[0].unix_time, data.temperature_record[0].celsius], true, shift);
         // Repeat this function call after 1 second
-        setTimeout(getData2, 1000);
+        setTimeout(getData2, interval);
       });
     }
     function getData3(){
@@ -45,7 +46,7 @@
         // Add the point
         chart3.series[0].addPoint([data.temperature_record[0].unix_time, data.temperature_record[0].celsius], true, shift);
         // Repeat this function call after 1 second
-        setTimeout(getData3, 1000);
+        setTimeout(getData3, interval);
       });
     }
     function getData4(){
@@ -57,7 +58,7 @@
         // Add the point
         chart4.series[0].addPoint([data.temperature_record[0].unix_time, data.temperature_record[0].celsius], true, shift);
         // Repeat this function call after 1 second
-        setTimeout(getData4, 1000);
+        setTimeout(getData4, interval);
       });
     }
 	</script>
