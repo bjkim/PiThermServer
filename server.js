@@ -17,6 +17,11 @@ var http = require('http');
 var sqlite3 = require('sqlite3');
 var moment = require('moment');
 
+var t1 = '28-000003c2b108';
+var t2 = '28-00000427b9d6';
+var t3 = '28-000003a7f65d';
+var t4 = '28-000003a82057';
+
 // Use node-static module to server chart for client-side dynamic graph
 var nodestatic = require('node-static');
 
@@ -106,16 +111,16 @@ function readTemp(id, callback) {
 // Create a wrapper function which we'll use specifically for logging
 function logTemp(interval) {
   // Call the readTemp function with the insertTemp function as output to get initial reading
-  readTemp('28-000003c2b108', insertTemp1);
-  readTemp('28-000003a80662', insertTemp2);
-  readTemp('28-00000427b9d6', insertTemp3);
-  readTemp('28-000003a82c81', insertTemp4);
+  readTemp(t1, insertTemp1);
+  readTemp(t2, insertTemp2);
+  readTemp(t3, insertTemp3);
+  readTemp(t4, insertTemp4);
   // Set the repeat interval (milliseconds). Third argument is passed as callback function to first (i.e. readTemp(insertTemp)).
   setInterval(function () {
-    readTemp('28-000003c2b108', insertTemp1);
-    readTemp('28-000003a80662', insertTemp2);
-    readTemp('28-00000427b9d6', insertTemp3);
-    readTemp('28-000003a82c81', insertTemp4);
+    readTemp(t1, insertTemp1);
+    readTemp(t2, insertTemp2);
+    readTemp(t3, insertTemp3);
+    readTemp(t4, insertTemp4);
   }, interval);
 }
 
@@ -276,28 +281,28 @@ var server = http.createServer(
 
     // Test to see if it's a request for current temperature   
     if (pathfile == '/temperature1_now.json') {
-      readTemp('28-000003c2b108', function (data) {
+      readTemp(t1, function (data) {
         response.writeHead(200, { "Content-type": "application/json" });		
         response.end(JSON.stringify(data), "ascii");
       });
       return;
     }
     else if (pathfile == '/temperature2_now.json') {
-      readTemp('28-000003a80662', function (data) {
+      readTemp(t2, function (data) {
         response.writeHead(200, { "Content-type": "application/json" });
         response.end(JSON.stringify(data), "ascii");
       });
       return;
     }
     else if (pathfile == '/temperature3_now.json') {
-      readTemp('28-00000427b9d6', function (data) {
+      readTemp(t3, function (data) {
         response.writeHead(200, { "Content-type": "application/json" });
         response.end(JSON.stringify(data), "ascii");
       });
       return;
     }
     else if (pathfile == '/temperature4_now.json') {
-      readTemp('28-000003a82c81', function (data) {
+      readTemp(t4, function (data) {
         response.writeHead(200, { "Content-type": "application/json" });
         response.end(JSON.stringify(data), "ascii");
       });

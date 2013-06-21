@@ -10,9 +10,10 @@
 		<script type="text/javascript">
 		
       var chart1, chart2, chart3, chart4; // global chart variable
+      var start_time = '2013-06-21T06:00';
       // Get data from server in JSON format (query time series when sensor was outside).
       function getData1(){
-         $.getJSON('/temperature1_query.json?num_obs=-1&start_date=2013-06-20T16:00', function(data){
+         $.getJSON('/temperature1_query.json?num_obs=-1&start_date=' + start_time, function(data){
             var series = {
                id: 'series',
                name: 'DS18B20 sensor (\u00B10.5\u00B0C)',
@@ -30,7 +31,7 @@
          });
       }
       function getData2(){
-         $.getJSON('/temperature2_query.json?num_obs=-1&start_date=2013-06-20T16:00', function(data){
+         $.getJSON('/temperature2_query.json?num_obs=-1&start_date=' + start_time, function(data){
             var series = {
                id: 'series',
                name: 'DS18B20 sensor (\u00B10.5\u00B0C)',
@@ -48,7 +49,7 @@
          });
       }
       function getData3(){
-         $.getJSON('/temperature3_query.json?num_obs=-1&start_date=2013-06-20T16:00', function(data){
+         $.getJSON('/temperature3_query.json?num_obs=-1&start_date=' + start_time, function(data){
             var series = {
                id: 'series',
                name: 'DS18B20 sensor (\u00B10.5\u00B0C)',
@@ -66,7 +67,7 @@
          });
       }
       function getData4(){
-         $.getJSON('/temperature4_query.json?num_obs=-1&start_date=2013-06-20T16:00', function(data){
+         $.getJSON('/temperature4_query.json?num_obs=-1&start_date=' + start_time, function(data){
             var series = {
                id: 'series',
                name: 'DS18B20 sensor (\u00B10.5\u00B0C)',
