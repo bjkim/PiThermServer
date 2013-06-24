@@ -17,10 +17,10 @@ var http = require('http');
 var sqlite3 = require('sqlite3');
 var moment = require('moment');
 
-var t1 = '28-000003c2b108';
-var t2 = '28-00000427b9d6';
-var t3 = '28-000003a7f65d';
-var t4 = '28-000003a82057';
+var t4 = null; //'28-000003c2b108';
+var t3 = null; //'28-00000427b9d6';
+var t2 = '28-000003a7f65d';
+var t1 = '28-000003a82057';
 
 // Use node-static module to server chart for client-side dynamic graph
 var nodestatic = require('node-static');
@@ -72,6 +72,11 @@ function insertTemp4(data) {
 
 // Read current temperature from sensor
 function readTemp(id, callback) {
+  if (id == null) {
+    return;
+    // do not thing
+  }
+
   fs.readFile('/sys/bus/w1/devices/' + id + '/w1_slave','utf8', function (err, buffer) {
     if (err) {
       console.error(err);
@@ -344,6 +349,7 @@ logTemp(msecs);
 // Send a message to console
 console.log('Server is logging to database at '+msecs+'ms intervals');
 // Enable server
-server.listen(8000);
+var server_address = 8000;
+server.listen(server_address);
 // Log message
-console.log('Server running at http://localhost:8000');
+console.log('Server running at http://localhost:', server_address);
